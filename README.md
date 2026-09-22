@@ -56,6 +56,46 @@ else
 
 ---
 
+## 🛠️ Project 3: Automated Corporate Records Synchronization (Oracle PL/SQL Stored Procedure)
+**Business Application:** A high-performance database script designed to automate business reviews, audit structural missing links, and handle daily transactional uploads seamlessly without slowing down user dashboards.
+
+```sql
+CREATE OR REPLACE PROCEDURE Sync_Corporate_Records (
+    p_batch_id       IN  NUMBER,
+    p_status_out     OUT VARCHAR2
+) AS
+    v_error_count    NUMBER := 0;
+BEGIN
+    -- 1. Automatic auditing and elimination of structural missing links
+    UPDATE Employee_Records_Staging
+    SET record_status = 'INVALID'
+    WHERE entry_date IS NULL OR employee_id IS NULL;
+
+    -- 2. Performance-optimized data migration and structural cleansing
+    MERGE INTO Corporate_Master_Database target
+    USING (
+        SELECT employee_id, first_name, last_name, NVL(salary, 0) as cleaned_salary
+        FROM Employee_Records_Staging
+        WHERE record_status = 'VALID' AND batch_id = p_batch_id
+    ) source
+    ON (target.employee_id = source.employee_id)
+    WHEN MATCHED THEN
+        UPDATE SET target.last_update = SYSDATE,
+                   target.salary = source.cleaned_salary
+    WHEN NOT MATCHED THEN
+        INSERT (employee_id, first_name, last_name, salary, created_at)
+        VALUES (source.employee_id, source.first_name, source.last_name, source.cleaned_salary, SYSDATE);
+
+    p_status_out := 'SUCCESS: Bulk data synchronization completed.';
+    
+EXCEPTION
+    WHEN OTHERS THEN
+        p_status_out := 'FAILED: System roll-back triggered due to execution error.';
+        ROLLBACK;
+END Sync_Corporate_Records;
+/
+```
+
 ## 📊 Core Technical Expertise
 * **Typing Benchmarks:** 71 Words Per Minute | 96% Accuracy (Verified by 10FastFingers)
 * **Data Engineering:** Query optimization, advanced indexing, database change management (Oracle PL/SQL, MS SQL Server foundations)
