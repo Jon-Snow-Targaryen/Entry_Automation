@@ -1,11 +1,11 @@
 # Data Entry & Business Automation Portfolio
-Welcome to my automation repository. As a tech-savvy Data Specialist and Computer Science graduate, I combine an advanced typing performance of **71 WPM (96% Accuracy)** with programming logic to eliminate repetitive workflows, optimize spreadsheets, and maintain absolute database integrity.
+Programming logic to eliminate repetitive workflows, optimize spreadsheets, and maintain absolute database integrity.
 
-Here are the functional automation scripts I developed to streamline daily administrative and operational tasks:
+Functional automation scripts to streamline daily administrative and operational tasks:
 
 ---
 
-## 🛠️ Project 1: Bulk File Management & Dynamic Renaming Tool (C#)
+## Bulk File Management & Dynamic Renaming Tool (C#)
 **Business Application:** Automatically copies, archives, and standardizes names for hundreds of supplier receipts, files, or customer contracts in seconds, eliminating manual data handling and extension errors.
 
 ```csharp
@@ -31,7 +31,7 @@ private void CopyAndRenameFile(string source, string destFolder, string newFileN
 }
 
 
--- Mass Emailing C#
+// A Windows Forms desktop app that reads structural customer tables from a raw text file (`~` delimited metadata tracking), dynamically builds financial range summaries, loops through multi-recipient mail domains, and dispatches dynamic emails via SMTP. It completely removes the manual stress of handling billing distributions.
 
 using System;
 using System.Globalization;
@@ -147,7 +147,7 @@ namespace Enterprise_Billing_Distributor
 
 ---
 
-## 🛠️ Project 2: Database Data Scrubbing & Mathematical Rounding Script (C# / SQL)
+## Database Data Scrubbing & Mathematical Rounding Script (C# / SQL)
 **Business Application:** Connects to an internal central reader, filters blank or null records securely, and automatically formats numeric floating values into uniform whole numbers to guarantee clean weekly financial reports.
 
 ```csharp
@@ -170,7 +170,7 @@ else
 
 ---
 
-## 🛠️ Project 3: Automated Corporate Records Synchronization (Oracle PL/SQL Stored Procedure)
+## Automated Corporate Records Synchronization (Oracle PL/SQL Stored Procedure)
 **Business Application:** A high-performance database script designed to automate business reviews, audit structural missing links, and handle daily transactional uploads seamlessly without slowing down user dashboards.
 
 ```sql
@@ -317,7 +317,10 @@ BEGIN
 END;
 /
 
--- Automation of Report to Excel file
+
+
+
+//Automation of Report to Excel file
 
 CREATE OR REPLACE PROCEDURE Generate_Infrastructure_Report IS 
     -- 1. Configuration variables for data destination and dynamic naming
@@ -445,6 +448,6 @@ END;
 Business Value: This enterprise-grade automated reporting module extracts infrastructure dataset layers across 5 relational tables, processes structural row tracking parameters, and compiles flat spreadsheet documents dynamically utilizing file stream handling library utilities (TEXT_IO). It automatically handles relational data joins and features an absolute data guard validation rule to optimize remote cloud report distributions.
 ```
 
-## 📊 Core Technical Expertise
+## Core Technical Expertise
 * **Data Engineering:** Query optimization, advanced indexing, database change management (Oracle PL/SQL, MS SQL Server foundations)
 * **Administrative Platforms:** Google Workspace, Advanced MS Excel (XLOOKUP, PivotTables, formatting structures), SharePoint administration
