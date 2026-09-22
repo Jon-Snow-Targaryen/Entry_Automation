@@ -328,7 +328,7 @@ BEGIN
 END; 
 /
 
-## Business Value: This enterprise-grade automated reporting module extracts infrastructure dataset layers across 5 relational tables, processes structural row tracking parameters, and compiles flat spreadsheet documents dynamically utilizing file stream handling library utilities (TEXT_IO). It automatically handles relational data joins and features an absolute data guard validation rule to optimize remote cloud report distributions.
+Business Value: This enterprise-grade automated reporting module extracts infrastructure dataset layers across 5 relational tables, processes structural row tracking parameters, and compiles flat spreadsheet documents dynamically utilizing file stream handling library utilities (TEXT_IO). It automatically handles relational data joins and features an absolute data guard validation rule to optimize remote cloud report distributions.
 ```
 
 ## 📊 Core Technical Expertise
