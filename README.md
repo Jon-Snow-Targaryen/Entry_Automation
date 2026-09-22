@@ -29,6 +29,120 @@ private void CopyAndRenameFile(string source, string destFolder, string newFileN
     string finalDestinationPath = Path.Combine(destFolder, newFileName + extension);
     File.Copy(source, finalDestinationPath, overwrite: true);
 }
+
+
+-- Mass Emailing C#
+
+using System;
+using System.Globalization;
+using System.IO;
+using System.Net;
+using System.Net.Mail;
+using System.Windows.Forms;
+
+namespace Enterprise_Billing_Distributor
+{
+    public partial class MainForm : Form
+    {
+        string attachmentsDirectory = "system_attachments";
+
+        public MainForm()
+        {
+            InitializeComponent();
+            PopulateSystemFilters();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            Directory.CreateDirectory(attachmentsDirectory);
+        }
+
+        private void PopulateSystemFilters()
+        {
+            // Dynamically populate chronological drop-down data matrix options
+            for (int year = 2020; year <= 2099; year++) cbYear.Items.Add(year.ToString());
+            cbYear.SelectedItem = DateTime.Now.Year.ToString();
+
+            for (int day = 1; day <= 31; day++) { cbStartDay.Items.Add(day.ToString()); cbEndDay.Items.Add(day.ToString()); }
+            cbStartDay.Text = "1"; cbEndDay.Text = "1";
+
+            foreach (string month in CultureInfo.CurrentCulture.DateTimeFormat.MonthNames)
+            {
+                if (!string.IsNullOrEmpty(month)) cbMonth.Items.Add(month);
+            }
+            cbMonth.SelectedItem = DateTime.Now.ToString("MMMM");
+            cbEmailWorkflowType.Text = "Whole Month";
+        }
+
+        private void btnProcessDistribution_Click(object sender, EventArgs e)
+        {
+            string promptMessage = cbEmailWorkflowType.Text == "Ranged Date" 
+                ? $"Launch automated billing distribution from {cbMonth.Text} {cbStartDay.Text}-{cbEndDay.Text}, {cbYear.Text}?"
+                : $"Launch automated billing distribution for the full month of {cbMonth.Text} {cbYear.Text}?";
+
+            if (MessageBox.Show(promptMessage, "System Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No) return;
+
+            // Stream line reader processes structural batch targets independently without blocking UI streams
+            using (StreamReader dataReader = new StreamReader(tbDistributionListFile.Text))
+            {
+                string dataLine;
+                while ((dataLine = dataReader.ReadLine()) != null)
+                {
+                    // Data tokenization mapping: ACCT_ID~BATCH_SEG~TOTAL_FILES~INV_COUNT~CM_COUNT~FILE_NAME~RECIPIENT_EMAILS
+                    string[] targetDetails = dataLine.Split('~');
+                    
+                    try
+                    {
+                        using (MailMessage clientMail = new MailMessage())
+                        {
+                            using (SmtpClient smtpGateway = new SmtpClient())
+                            {
+                                smtpGateway.Host = "://secure-mail-server.com";
+                                smtpGateway.Port = 587;
+                                smtpGateway.EnableSsl = true;
+                                smtpGateway.UseDefaultCredentials = false;
+                                smtpGateway.Credentials = new NetworkCredential(tbGatewayUser.Text, tbGatewayPassword.Text);
+
+                                clientMail.From = new MailAddress(tbGatewayUser.Text, "Corporate Finance Operations");
+
+                                // Parse comma-separated direct customer contacts safely
+                                string[] targetRecipients = targetDetails[6].Split(',');
+                                foreach (string emailAddress in targetRecipients)
+                                {
+                                    clientMail.To.Add(new MailAddress(emailAddress.Trim()));
+                                }
+
+                                string temporalRange = cbEmailWorkflowType.Text == "Ranged Date" 
+                                    ? $"{cbMonth.Text} {cbStartDay.Text}-{cbEndDay.Text}, {cbYear.Text}"
+                                    : $"{cbMonth.Text} {cbYear.Text}";
+
+                                clientMail.Subject = $"Statement Summary Reference ({temporalRange}) - ID: {targetDetails[0]}";
+                                clientMail.Body = 
+                                    $"Dear Valued Customer,{Environment.NewLine}{Environment.NewLine}" +
+                                    $"Please find attached your operational records and service account itemizations for the processing period of {temporalRange}.{Environment.NewLine}{Environment.NewLine}" +
+                                    $"- Consolidated Ledger Attachments: {targetDetails[2]}{Environment.NewLine}" +
+                                    $"- Total Standard Invoices Processed: {targetDetails[3]}{Environment.NewLine}" +
+                                    $"- Total Credit Adjustments Issued: {targetDetails[4]}{Environment.NewLine}{Environment.NewLine}" +
+                                    $"For any discrepancies or data inquiries, please reach out directly to your assigned accounts manager.{Environment.NewLine}{Environment.NewLine}" +
+                                    $"Best Regards,{Environment.NewLine}Finance Operations Administration{Environment.NewLine}{Environment.NewLine}" +
+                                    $"CONFIDENTIALITY NOTICE: This transmission is intended solely for the addressee and contains legally privileged parameters. Unauthorized replication, scrubbing, or file duplication is strictly prohibited.";
+
+                                smtpGateway.Send(clientMail);
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // Internal error monitoring logging logic handles edge-case faults gracefully
+                    }
+                }
+            }
+            MessageBox.Show("Automated batch dispatch cycle completed successfully.", "Status Update", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+    }
+}
+
+
 ```
 
 ---
