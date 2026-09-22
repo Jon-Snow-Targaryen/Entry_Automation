@@ -94,9 +94,37 @@ EXCEPTION
         ROLLBACK;
 END Sync_Corporate_Records;
 /
+
+CREATE OR REPLACE PROCEDURE Update_Expired_Order_Status IS
+    -- Ensures auditing logs are saved independently even if main transactions fail
+    PRAGMA AUTONOMOUS_TRANSACTION;
+    v_log_id       NUMBER;
+    v_process_name VARCHAR2(100) := 'UPDATE_EXPIRED_ORDER_STATUS';
+BEGIN
+    -- 1. Initialize background monitoring and performance audit trail
+    v_log_id := System_Logbook.Initialize_Entry(v_process_name, SYSDATE);
+
+    -- 2. Execute automated structural update on business records
+    -- Automatically flags pending expired items to a specific operational queue
+    UPDATE Corporate_Order_Registry COR 
+    SET COR.workflow_status = 'PENDING_REFUND' 
+    WHERE COR.workflow_status = 'PENDING_CHARGE' 
+      AND COR.clearing_deadline <= TRUNC(SYSDATE); 
+
+    -- 3. Commit changes immediately under the autonomous workflow context
+    COMMIT;
+
+    -- 4. Finalize activity tracking and runtime analytics logging
+    System_Logbook.Finalize_Entry(v_log_id, SYSDATE);
+  
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Secure rollback mechanism to prevent locking active data streams
+        ROLLBACK;
+        RAISE;
+END Update_Expired_Order_Status;
 ```
 
 ## 📊 Core Technical Expertise
-* **Typing Benchmarks:** 71 Words Per Minute | 96% Accuracy (Verified by 10FastFingers)
 * **Data Engineering:** Query optimization, advanced indexing, database change management (Oracle PL/SQL, MS SQL Server foundations)
 * **Administrative Platforms:** Google Workspace, Advanced MS Excel (XLOOKUP, PivotTables, formatting structures), SharePoint administration
