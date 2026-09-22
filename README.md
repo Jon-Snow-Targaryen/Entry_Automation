@@ -1,4 +1,4 @@
-# Data Entry & Business Automation Portfolio
+# Automation Programming Logic (C#, PL/SQL, SQL, )
 Programming logic to eliminate repetitive workflows, optimize spreadsheets, and maintain absolute database integrity.
 
 Functional automation scripts to streamline daily administrative and operational tasks:
@@ -450,4 +450,4 @@ Business Value: This enterprise-grade automated reporting module extracts infras
 
 ## Core Technical Expertise
 * **Data Engineering:** Query optimization, advanced indexing, database change management (Oracle PL/SQL, MS SQL Server foundations)
-* **Administrative Platforms:** Google Workspace, Advanced MS Excel (XLOOKUP, PivotTables, formatting structures), SharePoint administration
+* **Administrative Platforms:** Google Workspace, Advanced MS Excel (XLOOKUP, PivotTables, formatting structures).
